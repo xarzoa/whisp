@@ -9,7 +9,7 @@ export default function Send({ id }) {
 
   async function sendMessage(formData) {
     const message = formData.get('message')
-    console.log(message)
+    console.log(formData)
     const {
       data: { user },
     } = await supabase.auth.getUser();
@@ -23,6 +23,7 @@ export default function Send({ id }) {
     if (error) {
       console.log(error);
     }
+    formData.delete('message')
   }
 
   return (
