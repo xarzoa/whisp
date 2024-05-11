@@ -1,3 +1,4 @@
+"use client";
 import { Button } from "../ui/button";
 import { useFormStatus } from "react-dom";
 import Dots from "./loader/dots";

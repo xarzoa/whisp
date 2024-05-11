@@ -2,8 +2,8 @@ import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 
 export const metadata = {
-  title: 'Chats - HYD'
-}
+  title: "Chats - HYD",
+};
 
 export default async function ProtectedPage() {
   const supabase = createClient();
@@ -14,8 +14,6 @@ export default async function ProtectedPage() {
   if (!user) redirect("/auth");
 
   return (
-    <div className="grid min-h-screen place-items-center w-screen">
-      Chats
-    </div>
+    <div className="grid min-h-screen place-items-center w-screen">Chats</div>
   );
 }

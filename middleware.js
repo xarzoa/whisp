@@ -1,7 +1,19 @@
 import { updateSession } from "@/lib/supabase/middleware";
+import { NextResponse } from "next/server";
 
-export async function middleware(request) {
-  return await updateSession(request);
+export default async function Middleware(req) {
+  const url = req.nextUrl;
+  const res = await updateSession(req);
+  const user = res.data.user
+  console.info(res)
+  if (url.pathname.startsWith('/auth') && user) {
+    url.pathname = '/profile';
+    return NextResponse.redirect(url, req.url);
+  }
+  if (url.pathname.startsWith('/profile') && !user) {
+    url.pathname = '/auth';
+    return NextResponse.redirect(url, req.url);
+  }
 }
 
 export const config = {

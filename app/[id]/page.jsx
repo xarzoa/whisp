@@ -1,16 +1,16 @@
-import { Button } from "@/components/ui/button"
-import Link from "next/link"
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
-export default function PublicProfile({ params }){
-  const { id } = params
-  return(
+export default function PublicProfile({ params }) {
+  const { id } = params;
+  return (
     <div className="grid place-items-center">
       <div>
-        { id }
+        {id}
         <Button asChild>
-          <Link href={`/chat/${id}/new`}>Text</Link>
+          <Link href={`/chats/${id}/`}>Text</Link>
         </Button>
       </div>
     </div>
-  )
+  );
 }

@@ -14,6 +14,6 @@ export async function verifyToken(token, email) {
       console.log(error);
       return redirect("/auth");
     }
-    return redirect("/protected");
+    return redirect("/profile");
   }
 }
