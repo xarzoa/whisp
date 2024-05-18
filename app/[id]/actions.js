@@ -11,8 +11,8 @@ export async function createRoom(id, profile, user){
   }
   if(user){
     const { data } =await supabase.from('rooms').insert({
-      matched_one: user.id,
-      matched_two: uuid
+      user_one: user.id,
+      user_two: uuid
     }).select()
     return redirect(`/chats/${data[0].id}`)
   }

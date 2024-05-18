@@ -21,8 +21,8 @@ export async function matchRandom(user) {
   const { data, error: err } = await supabase
     .from('rooms')
     .insert({
-      matched_one: user.id,
-      matched_two: pool[Math.floor(Math.random() * pool.length)].id,
+      user_one: user.id,
+      user_two: pool[Math.floor(Math.random() * pool.length)].id,
       last_activity: new Date(),
     })
     .select();

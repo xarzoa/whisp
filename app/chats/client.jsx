@@ -2,29 +2,43 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { matchRandom, createNewChat } from './actions';
-import { Plus, Dices } from 'lucide-react';
+import { Plus, Dices, User } from 'lucide-react';
 
 export default function ChatsClient({ user, matchs }) {
   const [matches, setMatches] = useState(matchs);
   function getStranger(match, user) {
-    if (match.matched_one === user.id) {
-      return match.matched_two;
+    if (match.user_one === user.id) {
+      return match.user_two;
     }
-    return match.matched_one;
+    return match.user_one;
   }
-  
+
   return (
     <>
       <div className="w-full sm:max-w-md">
         <div>
           <header className="w-full sticky top-0 mb-2 font-jbmono font-semibold">
             <div className="flex justify-between">
-                <button className="p-2 bg-stone-900/30 backdrop-blur-lg border rounded-lg" onClick={() => createNewChat(user.id)}>
-                  <Plus/>
+              <button
+                className="p-2 bg-stone-900/30 backdrop-blur-lg border rounded-lg"
+                onClick={() => createNewChat(user.id)}
+              >
+                <Plus />
+              </button>
+              <div className="flex gap-2">
+                <Link
+                  className="p-2 bg-white backdrop-blur-lg border rounded-lg text-black stroke-[1.5]"
+                  href="/profile"
+                >
+                  <User />
+                </Link>
+                <button
+                  className="p-2 bg-white backdrop-blur-lg border rounded-lg text-black stroke-[1.5]"
+                  onClick={() => matchRandom(user.id)}
+                >
+                  <Dices />
                 </button>
-                <button className="p-2 bg-white backdrop-blur-lg border rounded-lg text-black" onClick={() => matchRandom(user.id)}>
-                  <Dices/>
-                </button>
+              </div>
             </div>
           </header>
         </div>
