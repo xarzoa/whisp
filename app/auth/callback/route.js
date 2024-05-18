@@ -15,5 +15,5 @@ export async function GET(request) {
   }
 
   // URL to redirect to after sign up process completes
-  return NextResponse.redirect(`${origin}/profile`);
+  return NextResponse.redirect(`${origin}/chats`);
 }

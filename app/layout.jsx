@@ -8,6 +8,7 @@ const jbMono = JetBrains_Mono({
   subsets: ["latin"],
   display: "swap",
   variable: "--font-jb_mono",
+  adjustFontFallback: false
 });
 
 const dmsans = DM_Sans({
@@ -26,6 +27,7 @@ const dmsans = DM_Sans({
   subsets: ["latin"],
   display: "swap",
   variable: "--font-dmsans",
+  adjustFontFallback: false
 });
 
 export const viewport = {
@@ -41,7 +43,7 @@ export default function RootLayout({ children }) {
       <head />
       <body
         className={cn(
-          "min-h-screen bg-background font-sans antialiased w-screen",
+          "min-h-screen bg-background font-sans antialiased max-w-[100vw] hide-scroll selection:bg-stone-300 selection:text-stone-950",
           dmsans.variable,
           jbMono.variable,
         )}
