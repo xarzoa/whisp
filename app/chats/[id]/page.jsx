@@ -1,10 +1,12 @@
 import { redirect } from "next/navigation";
 import Messages from "./messages";
 import { createClient } from "@/lib/supabase/server";
+import { joinRoom } from "@/lib/ws";
 
 export default async function ChatPortal({ params }) {
   const { id } = params;
   const supabase = createClient();
+  if (id) joinRoom(id);
   const {
     data: { user },
   } = await supabase.auth.getUser();

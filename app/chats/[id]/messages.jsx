@@ -23,8 +23,6 @@ export default function Messages({ msgs, user, id }) {
   };
   const [messages, setMessages] = useState(msgs);
 
-  if (id) joinRoom(id);
-
   async function sendMessage(formData) {
     const message = formData.get('message');
     if (message.length < 1) return toast.error('Empty message.');
@@ -52,7 +50,6 @@ export default function Messages({ msgs, user, id }) {
   }
 
   useEffect(() => {
-    socket.emit('join', id);
     socket.on('message', (message) => {
       setMessages([...messages, message]);
     });
@@ -63,8 +60,9 @@ export default function Messages({ msgs, user, id }) {
   }, [messages]);
 
   useEffect(() => {
+    if(id) joinRoom(id)
     setNav(navigator.language);
-  }, [setNav]);
+  }, [id, setNav]);
 
   return (
     <div className="w-full h-full flex justify-center">
