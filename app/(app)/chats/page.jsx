@@ -1,8 +1,9 @@
 import { createClient } from '@/lib/supabase/server';
-import Client from './client';
+import { redirect } from 'next/navigation';
+import ChatsClient from './client';
 
 export const metadata = {
-  title: 'Profile - HYD',
+  title: 'Chats - Whisp',
 };
 
 export default async function ProtectedPage() {
@@ -11,9 +12,16 @@ export default async function ProtectedPage() {
     data: { user },
   } = await supabase.auth.getUser();
 
+  if (!user) redirect('/auth');
+
+  const { data: matches } = await supabase
+    .from('rooms')
+    .select('*')
+    .or(`user_one.eq.${user.id}, user_two.eq.${user.id}`);
+
   return (
     <div className="grid w-full p-2 place-items-center h-full">
-      <Client user={user} />
+      <ChatsClient user={user} matchs={matches} />
     </div>
   );
 }

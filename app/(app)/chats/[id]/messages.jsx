@@ -10,6 +10,7 @@ import { useFormStatus } from 'react-dom';
 import Dots from '@/components/app/loader/dots';
 import { SendHorizonal, ArrowLeft } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 export default function Messages({ msgs, user, id }) {
   const supabase = createClient();
@@ -26,9 +27,6 @@ export default function Messages({ msgs, user, id }) {
   async function sendMessage(formData) {
     const message = formData.get('message');
     if (message.length < 1) return toast.error('Empty message.');
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
     const msg = {
       text: message,
       room: id,
@@ -40,12 +38,12 @@ export default function Messages({ msgs, user, id }) {
         name: 'your mom',
       },
     };
-    const { error } = await supabase.from('messages').insert(msg);
+    const res = await supabase.from('messages').insert(msg);
     sendMsg(msg, id);
     setMessages([...messages, msg]);
     form.current.reset();
-    if (error) {
-      console.log(error);
+    if (res) {
+      console.log(res);
     }
   }
 
@@ -68,12 +66,12 @@ export default function Messages({ msgs, user, id }) {
     <div className="w-full h-full flex justify-center">
       <div className="w-full sm:max-w-md">
         <div className="mb-2 sticky z-50 flex justify-between items-center">
-          <button
+          <Link
             className="p-2 bg-stone-900/30 backdrop-blur-lg border rounded-lg hover:bg-stone-500/30 focus:bg-stone-500/30 duration-200"
-            onClick={router.back}
+            href='/chats'
           >
-            <ArrowLeft />
-          </button>
+            <ArrowLeft/>
+          </Link>
           <div className="flex gap-2 items-center">
             <div className="h-9 w-24 bg-stone-400 grid place-items-center font-bold text-xs font-jbmono rounded-lg relative">
               <div className="m-1 truncate max-w-20">
@@ -155,7 +153,7 @@ function SubmitButton({ className, disabled, tw, ...props }) {
       {pending ? (
         <Dots tw={tw} />
       ) : (
-        <SendHorizonal className="h-6 w-6 text-black stroke-1" />
+        <SendHorizonal className="h-6 w-6 text-black stroke-[1.5]" />
       )}
     </Button>
   );

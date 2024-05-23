@@ -2,18 +2,20 @@ import Link from 'next/link';
 import { createClient } from '@/lib/supabase/server';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import Client from './client';
-
+import { checkUUID } from '@/lib/checks';
 export default async function PublicProfile({ params }) {
   const { id } = params;
+  const column = checkUUID(id) ? 'id' : 'username'
   const supabase = createClient();
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from('profiles')
-    .select('name, username, id, bio, interests, avatar, socials')
-    .or(`username.eq.${id}, id.eq.${id}`);
-
-  const {data: {user}} = await supabase.auth.getUser()
+    .select('name, username, id, bio, interests, avatar, socials').eq(column, id)
 
   if (!data) return <div>404 no user</div>;
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   const profile = data[0];
 
@@ -24,14 +26,14 @@ export default async function PublicProfile({ params }) {
           <div className="flex gap-2 flex-wrap">
             <Link
               href="/"
-              className="flex items-center p-4 h-full bg-stone-900/30 border backdrop-blur-md rounded-lg font-bold shadow-[0px_0px_20px_0px_rgb(245_245_244_/_0.1)] hover:bg-stone-800/50 duration-100"
+              className="flex items-center p-4 h-full bg-stone-900/30 border backdrop-blur-md rounded-2xl font-bold hover:bg-stone-900 duration-100"
             >
-              HYD? LOL
+              Whisp
             </Link>
           </div>
         </div>
       </header>
-      <div className="w-full sm:w-[25rem] h-full sm:h-[35rem] sm:border duration-500 rounded-xl sm:shadow-[0px_0px_70px_0px_rgb(245_245_244_/_0.05)]">
+      <div className="w-full sm:w-[25rem] h-full sm:h-[35rem] sm:border duration-500 rounded-2xl sm:shadow-[0px_0px_70px_0px_rgb(245_245_244_/_0.05)]">
         <div>
           <div className="w-full flex justify-center mt-20 sm:mt-10">
             <Avatar className="h-32 w-32 rounded-3xl">
@@ -46,9 +48,9 @@ export default async function PublicProfile({ params }) {
               {profile.name}
             </div>
           </div>
-          
+
           <div className="text-center">
-            <Client user={user} id={id} profile={profile}/>
+            <Client user={user} id={id} profile={profile} />
           </div>
         </div>
       </div>

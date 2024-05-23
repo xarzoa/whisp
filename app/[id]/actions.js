@@ -1,20 +1,29 @@
 'use server'
 import { createClient } from "@/lib/supabase/server"
 import { redirect } from "next/navigation"
+import { checkUUID } from "@/lib/checks"
 
 export async function createRoom(id, profile, user){
   const supabase = createClient()
-  const isUUID = (/^[0-9A-F]{8}-[0-9A-F]{4}-[4][0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i).test(id)
-  const uuid =  isUUID ? id : profile.id
+  const uuid = checkUUID(id) ? id : profile.id
   if(uuid === user.id) return {
-    message: "You can't text yourself."
+    message: "You can't text yourself.",
+    type: "error"
   }
   if(user){
-    const { data } =await supabase.from('rooms').insert({
+    const { data, error } =await supabase.from('rooms').insert({
       user_one: user.id,
-      user_two: uuid
+      user_two: uuid,
     }).select()
-    return redirect(`/chats/${data[0].id}`)
+    console.log('data',data)
+    if(data){
+      return redirect(`/chats/${data[0].id}`)
+    }
+    console.log(error)
+    return {
+      message: error.hint,
+      type: 'error'
+    }
   }
   return redirect(`/auth?match=${uuid}`)
 }

@@ -1,7 +1,7 @@
 'use client';
 import {
   ArrowLeft,
-  MessagesSquare,
+  Settings2,
   Camera,
   Copy,
   CopyCheck,
@@ -12,6 +12,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { useCopyToClipboard } from '@uidotdev/usehooks';
 import { useRef } from 'react';
+import Link from 'next/link';
 
 export default function Client({ user }) {
   const profile = user.user_metadata;
@@ -23,16 +24,16 @@ export default function Client({ user }) {
         <div>
           <header className="w-full sticky top-0 mb-2 font-jbmono font-semibold">
             <div className="flex justify-between">
-              <button className="p-2 bg-stone-900/30 backdrop-blur-lg border rounded-lg">
+              <Link className="p-2 bg-stone-900/30 backdrop-blur-lg border rounded-lg" href="/chats">
                 <ArrowLeft />
-              </button>
-              <button className="p-2 bg-stone-100 text-stone-900 backdrop-blur-lg border rounded-lg">
-                <MessagesSquare className="stroke-[1.5]" />
+              </Link>
+              <button className="p-2 bg-stone-900/30 backdrop-blur-lg border rounded-lg">
+                <Settings2 className="stroke-[1.5]" />
               </button>
             </div>
           </header>
         </div>
-        <div>
+        <div className='p-2'>
           <div>
             <label htmlFor="avatar" className="text-sm font-bold">
               Avatar
@@ -75,7 +76,7 @@ export default function Client({ user }) {
             </label>
             <div className="w-full flex">
               <Input defaultValue={user.id} id="id" readOnly />
-              <Button size="icon" className="w-11 ml-2" onClick={() => copyToClipboard(user.id)}>{copiedText ? <CopyCheck className='stroke-[1.5]'/> : <Copy className='stroke-[1.5]'/>}</Button>
+              <Button size="icon" className="w-11 ml-2" variant="outline" onClick={() => copyToClipboard(user.id)}>{copiedText ? <CopyCheck className='stroke-[1.5]'/> : <Copy className='stroke-[1.5]'/>}</Button>
             </div>
           </div>
           <form className="text-lg font-dmsans mt-2">
@@ -92,7 +93,7 @@ export default function Client({ user }) {
               <Textarea defaultValue={profile.bio} id="bio" />
             </div>
             <div className="flex justify-end mt-2">
-              <Button>Save</Button>
+              <Button variant="outline" >Save</Button>
             </div>
           </form>
           <div className="text-center"></div>

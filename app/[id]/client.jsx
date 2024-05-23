@@ -1,13 +1,28 @@
-'use client'
-import { createRoom } from "./actions";
+'use client';
+import { createRoom } from './actions';
+import { useState } from 'react';
+import Dots from '@/components/app/loader/dots';
+import { toast } from 'sonner';
+import { Button } from '@/components/ui/button';
 
 export default function Client({ id, user, profile }) {
+  const [loading, setLoading] = useState(false);
+  async function buttonClick() {
+    setLoading(true);
+    const res = await createRoom(id, profile, user);
+    if (res) {
+      toast[res.type](res.message);
+    }
+    setLoading(false);
+  }
   return (
-    <button
-      className="p-2 px-3 rounded-lg bg-stone-100 border focus:bg-stone-200/90 hover:bg-stone-200/90 duration-200 text-stone-900 font-semibold font-jbmono"
-      onClick={() => createRoom(id, profile, user )}
+    <Button
+      className="font-bold font-jbmono"
+      variant="outline"
+      onClick={buttonClick}
+      disabled={loading}
     >
-      Talk
-    </button>
+      {loading ? <Dots /> : 'Talk'}
+    </Button>
   );
 }

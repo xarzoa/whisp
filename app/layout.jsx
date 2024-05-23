@@ -43,7 +43,7 @@ export default function RootLayout({ children }) {
       <head />
       <body
         className={cn(
-          "min-h-screen bg-background font-sans antialiased max-w-[100vw] hide-scroll selection:bg-stone-300 selection:text-stone-950",
+          "min-h-screen bg-background font-dmsans antialiased max-w-[100vw] hide-scroll selection:bg-stone-300 selection:text-stone-950",
           dmsans.variable,
           jbMono.variable,
         )}
