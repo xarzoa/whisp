@@ -1,7 +1,7 @@
 import VerifyClient from "./client";
 
 export const metadata = {
-  title: "Verify OTP - HYD",
+  title: "Verify OTP - Whisp",
 };
 
 export default function Verify({ searchParams }) {

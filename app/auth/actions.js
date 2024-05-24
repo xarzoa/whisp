@@ -2,6 +2,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
 import { generate } from 'random-words';
+import { generateRandomString } from '@/lib/helpers';
 
 export const signIn = async (formData) => {
   const email = formData.get('email');
@@ -26,7 +27,8 @@ export const signInAnon = async () => {
   const { error } = await supabase.auth.signInAnonymously({
     options: {
       data: {
-        name: generate({ exactly: 2, join: ' ', minLength: 4 })
+        name: generate({ exactly: 2, join: ' ', minLength: 4 }),
+        username: generateRandomString(12)
       },
     }
   });

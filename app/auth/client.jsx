@@ -21,7 +21,7 @@ export default function Login() {
   }
   return (
     <div className="grid place-items-center h-screen">
-      <div className='relative font-jbmono'>
+      <div className="relative font-jbmono">
         <div className="absolute h-32 w-32 bg-white/50 -z-10 blur-3xl"></div>
         <Card>
           <CardHeader>
@@ -35,7 +35,7 @@ export default function Login() {
             >
               <Input
                 name="email"
-                placeholder="you@example.com"
+                placeholder="me@whisp.lol"
                 type="email"
                 required
               />
@@ -56,7 +56,15 @@ export default function Login() {
           </CardContent>
           <CardFooter>
             <p className="text-xs text-stone-400">
-              By signing up you accept your <Link href="/legal/privacy" className='underline'>privacy</Link> and <Link href="/legal/terms" className='underline'>terms</Link>.
+              By signing up you accept your{' '}
+              <Link href="/legal/privacy" className="underline">
+                privacy
+              </Link>{' '}
+              and{' '}
+              <Link href="/legal/terms" className="underline">
+                terms
+              </Link>
+              .
             </p>
           </CardFooter>
         </Card>

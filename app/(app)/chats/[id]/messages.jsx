@@ -2,22 +2,20 @@
 import { createClient } from '@/lib/supabase/client';
 import { useEffect, useState, useRef } from 'react';
 import { useDocumentTitle } from '@uidotdev/usehooks';
-import { socket, joinRoom, sendMessage as sendMsg } from '@/lib/ws';
+import { socket } from '@/lib/ws';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { useFormStatus } from 'react-dom';
 import Dots from '@/components/app/loader/dots';
 import { SendHorizonal, ArrowLeft } from 'lucide-react';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
-export default function Messages({ msgs, user, id }) {
+export default function Messages({ msgs, user, id, profile }) {
   const supabase = createClient();
   const scroll = useRef(null);
   const form = useRef(null);
-  const router = useRouter();
-  useDocumentTitle(`Chat - ${msgs[0]?.sender_info.id}`);
+  useDocumentTitle(`Chat with ${profile.name}`);
   const [nav, setNav] = useState('en-GB');
   const scrollToBottom = () => {
     scroll.current?.scrollIntoView({ behavior: 'smooth' });
@@ -38,13 +36,10 @@ export default function Messages({ msgs, user, id }) {
         name: 'your mom',
       },
     };
-    const res = await supabase.from('messages').insert(msg);
-    sendMsg(msg, id);
+    await supabase.from('messages').insert(msg);
+    socket.emit('message', msg, id)
     setMessages([...messages, msg]);
     form.current.reset();
-    if (res) {
-      console.log(res);
-    }
   }
 
   useEffect(() => {
@@ -58,7 +53,7 @@ export default function Messages({ msgs, user, id }) {
   }, [messages]);
 
   useEffect(() => {
-    if(id) joinRoom(id)
+    if(id) socket.emit('join', id)
     setNav(navigator.language);
   }, [id, setNav]);
 
@@ -75,14 +70,14 @@ export default function Messages({ msgs, user, id }) {
           <div className="flex gap-2 items-center">
             <div className="h-9 w-24 bg-stone-400 grid place-items-center font-bold text-xs font-jbmono rounded-lg relative">
               <div className="m-1 truncate max-w-20">
-                {messages[0]?.sender_info.id}
+                {profile.name}
               </div>
               <div className="absolute -top-2 -left-2 px-1 rounded-md backdrop-blur-lg">
                 stranger
               </div>
             </div>
             <div className="h-9 w-24 bg-stone-500 grid place-items-center font-bold text-xs font-jbmono rounded-lg relative">
-              <div className="m-1 truncate max-w-20">{user.id}</div>
+              <div className="m-1 truncate max-w-20">{user.user_metadata.name}</div>
               <div className="absolute -top-2 -left-2 px-1 rounded-md backdrop-blur-lg">
                 you
               </div>

@@ -72,10 +72,10 @@ export default function Client({ user }) {
           </div>
           <div>
             <label htmlFor="id" className="text-sm font-bold">
-              ID
+              username
             </label>
             <div className="w-full flex">
-              <Input defaultValue={user.id} id="id" readOnly />
+              <Input defaultValue={profile.username} id="id" readOnly />
               <Button size="icon" className="w-11 ml-2" variant="outline" onClick={() => copyToClipboard(user.id)}>{copiedText ? <CopyCheck className='stroke-[1.5]'/> : <Copy className='stroke-[1.5]'/>}</Button>
             </div>
           </div>

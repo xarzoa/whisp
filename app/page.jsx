@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import Header from '@/components/app/header';
+import { Button } from '@/components/ui/button';
 
 export const metadata = {
   title: 'Whisp - Text to people. Anonymously.',
@@ -30,18 +31,20 @@ export default async function Home() {
       <Header />
       <div className="px-4 pt-4 md:max-w-3xl mt-10">
         <div className="w-full bg-stone-900 py-32 rounded-lg">
-          <div className="text-center font-jbmono">
+          <div className="text-center font-jbmono relative">
+            <div className="h-10 w-40 bg-white/90 absolute blur-3xl"></div>
             <div className="text-base md:text-xl duration-500 text-stone-400 font-semibold mx-16">
               Meet new people all over the world.
             </div>
             <div className="text-3xl md:text-5xl duration-500 grid place-items-center font-extrabold mx-5 text-center">
               Text to anyone, Anonymously.
             </div>
-            <div className='mt-8'>
-              <Link className='p-3 px-4 border bg-black/50 rounded-lg hover:bg-black/10 focus:bg-black/10 md:text-xl font-semibold duration-300' href="/auth">
-                Start chatting
-              </Link>
+            <div className="mt-8">
+              <Button className="p-5 border bg-black/50 rounded-lg hover:bg-black/10 focus:bg-black/10  text-lg md:text-xl font-semibold duration-300 text-white" asChild>
+                <Link href="/auth">Start chatting</Link>
+              </Button>
             </div>
+            <div className="h-10 w-64 bg-white/90 absolute blur-3xl right-0 rotate-12"></div>
           </div>
         </div>
         <ul className="grid gap-6 md:gap-2 md:grid-cols-8 mt-6 md:mt-4 font-jbmono font-semibold md:grid-rows-2 text-center md:text-start duration-500">
@@ -79,7 +82,7 @@ export default async function Home() {
         </ul>
         <footer className="grid md:grid-cols-2 mt-8 p-4 pb-8 bg-stone-900 rounded-t-lg">
           <div></div>
-          <div className='grid grid-cols-3 text-center text-sm md:text-base md:text-end font-jbmono text-stone-200 underline gap-4'>
+          <div className="grid grid-cols-3 text-center text-sm md:text-base md:text-end font-jbmono text-stone-200 underline gap-4">
             <ul>
               {company.map((item, index) => (
                 <li key={index}>

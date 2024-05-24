@@ -12,7 +12,10 @@ export async function verifyToken(token, email) {
     });
     if (error) {
       console.log(error);
-      return redirect("/auth");
+      return {
+        message: error,
+        type: 'error'
+      }
     }
     return redirect("/chats");
   }

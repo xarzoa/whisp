@@ -1,9 +1,8 @@
 'use client';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { matchRandom, createNewChat } from './actions';
-import { Plus, Dices, User } from 'lucide-react';
-import Dots from '@/components/app/loader/dots';
+import { createNewChat } from './actions';
+import { Plus, User } from 'lucide-react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import {
@@ -15,30 +14,21 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import SubmitButton from '@/components/app/submit-button';
-import { joinRoom, socket } from '@/lib/ws';
+import { socket } from '@/lib/ws';
 
 export default function ChatsClient({ user, matchs }) {
   const [matches, setMatches] = useState(matchs);
-  const [matching, setMatching] = useState(false);
   const [creating, setCreating] = useState(false);
   const [open, setOpen] = useState(false);
 
-  joinRoom(user.id)
+  socket.emit('join', user.id)
+
 
   useEffect(() => {
     socket.on('match', id => {
       console.log(id)
     })
   })
-
-  async function createMatch() {
-    setMatching(true);
-    const res = await matchRandom(user);
-    if (res) {
-      toast[res.type](res.message);
-    }
-    setMatching(false);
-  }
 
   async function createChat(formData) {
     setCreating(true);
@@ -72,9 +62,6 @@ export default function ChatsClient({ user, matchs }) {
                     <User className="stroke-[1.5]" />
                   </Link>
                 </Button>
-                <Button onClick={createMatch} variant="outline" size="icon">
-                  {matching ? <Dots /> : <Dices className="stok-[1.5]" />}
-                </Button>
               </div>
             </div>
           </header>
@@ -89,7 +76,7 @@ export default function ChatsClient({ user, matchs }) {
             </DialogHeader>
             <div>
               <form action={createChat} className="mt-2 space-y-2">
-                <Input name="id" placeholder="whi5p-84is-p4er-9his-pwhisper0" />
+                <Input name="username" placeholder="whisp" />
                 <div className="flex justify-end">
                   <SubmitButton childern={'Create'} />
                 </div>

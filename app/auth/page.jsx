@@ -1,7 +1,7 @@
 import LoginClient from "./client";
 
 export const metadata = {
-  title: "Authenticate - HYD",
+  title: "Authenticate - Whisp",
 };
 
 export default function Login() {

@@ -1,33 +1,39 @@
-"use client";
+'use client';
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
   CardDescription,
-} from "@/components/ui/card";
+  CardFooter,
+} from '@/components/ui/card';
 import {
   InputOTP,
   InputOTPGroup,
   InputOTPSeparator,
   InputOTPSlot,
-} from "@/components/ui/input-otp";
-import { verifyToken } from "./actions";
+} from '@/components/ui/input-otp';
+import { verifyToken } from './actions';
+import Link from 'next/link';
+import { toast } from 'sonner';
 
 export default function VerifyClient({ searchParams }) {
+  const email = searchParams.email;
   const verifyOtp = async (e) => {
-    const email = searchParams.email;
     if (e.length === 6) {
-      await verifyToken(e, email);
+      const id = toast.loading("Verifying...")
+      const res = await verifyToken(e, email);
+      toast[res.type](res.message, { id })
     }
   };
   return (
     <div className="grid place-items-center h-screen">
       <Card>
         <CardHeader>
-          <CardTitle className="text-center">OTP</CardTitle>
-          <CardDescription>
-            Enter the otp you recived via a email to {searchParams.email}.
+          <CardTitle className="text-center">Verify OTP</CardTitle>
+          <CardDescription className="md:max-w-64 text-center">
+            A verification code has been sent to <b>{email}</b>. Enter the code
+            to continue and be redirected.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -47,6 +53,12 @@ export default function VerifyClient({ searchParams }) {
             </InputOTP>
           </form>
         </CardContent>
+        <CardFooter className="font-jbmono text-xs text-center text-stone-400">
+          Didn&#39;t recieved the code?{' '}
+          <Link href="/auth" className="text-stone-500 underline ml-1">
+            Resend it
+          </Link>.
+        </CardFooter>
       </Card>
     </div>
   );

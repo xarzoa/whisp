@@ -7,8 +7,8 @@ export default async function Header() {
     data: { user },
   } = await supabase.auth.getUser();
   return (
-    <header className="w-full top-0 fixed">
-      <div className="flex m-4 h-10 justify-between font-jbmono backdrop-blur-sm rounded-lg">
+    <header className="w-full top-0 fixed z-50">
+      <div className="flex m-4 h-10 justify-between font-jbmono backdrop-blur-sm rounded-lg bg-black/5">
         <div className="flex gap-2 flex-wrap">
           <Link
             href="/"
@@ -22,7 +22,7 @@ export default async function Header() {
             href={user ? '/chats' : '/auth'}
             className="flex items-center p-4 h-full rounded-lg font-bold hover:bg-stone-950 duration-200"
           >
-            {user ? 'Chat' : 'Login'}
+            {user ? 'Chats' : 'Sign Up'}
           </Link>
         </div>
       </div>
