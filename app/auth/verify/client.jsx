@@ -23,7 +23,11 @@ export default function VerifyClient({ searchParams }) {
     if (e.length === 6) {
       const id = toast.loading("Verifying...")
       const res = await verifyToken(e, email);
-      toast[res.type](res.message, { id })
+      if(res){
+        toast[res.type](res.message, { id })
+      }else{
+        toast.success('Verified. Redirecting...', { id })
+      }
     }
   };
   return (

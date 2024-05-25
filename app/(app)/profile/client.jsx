@@ -1,30 +1,33 @@
 'use client';
-import {
-  ArrowLeft,
-  Settings2,
-  Camera,
-  Copy,
-  CopyCheck,
-} from 'lucide-react';
+import { ArrowLeft, Settings2, Camera, Copy, CopyCheck } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { useCopyToClipboard } from '@uidotdev/usehooks';
-import { useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 
 export default function Client({ user }) {
   const profile = user.user_metadata;
   const avatarInput = useRef(null);
   const [copiedText, copyToClipboard] = useCopyToClipboard();
+  const [copied, setCopied] = useState(false);
+  useEffect(() => {
+    setTimeout(() => {
+      setCopied(null);
+    }, 10000);
+  });
   return (
     <>
       <div className="w-full sm:max-w-md">
         <div>
           <header className="w-full sticky top-0 mb-2 font-jbmono font-semibold">
             <div className="flex justify-between">
-              <Link className="p-2 bg-stone-900/30 backdrop-blur-lg border rounded-lg" href="/chats">
+              <Link
+                className="p-2 bg-stone-900/30 backdrop-blur-lg border rounded-lg"
+                href="/chats"
+              >
                 <ArrowLeft />
               </Link>
               <button className="p-2 bg-stone-900/30 backdrop-blur-lg border rounded-lg">
@@ -33,7 +36,7 @@ export default function Client({ user }) {
             </div>
           </header>
         </div>
-        <div className='p-2'>
+        <div className="p-2">
           <div>
             <label htmlFor="avatar" className="text-sm font-bold">
               Avatar
@@ -72,11 +75,25 @@ export default function Client({ user }) {
           </div>
           <div>
             <label htmlFor="id" className="text-sm font-bold">
-              username
+              ID
             </label>
             <div className="w-full flex">
-              <Input defaultValue={profile.username} id="id" readOnly />
-              <Button size="icon" className="w-11 ml-2" variant="outline" onClick={() => copyToClipboard(user.id)}>{copiedText ? <CopyCheck className='stroke-[1.5]'/> : <Copy className='stroke-[1.5]'/>}</Button>
+              <Input defaultValue={user.id} id="id" readOnly />
+              <Button
+                size="icon"
+                className="w-11 ml-2"
+                variant="outline"
+                onClick={() => {
+                  copyToClipboard(user.id);
+                  setCopied(true);
+                }}
+              >
+                {copied ? (
+                  <CopyCheck className="stroke-[1.5]" />
+                ) : (
+                  <Copy className="stroke-[1.5]" />
+                )}
+              </Button>
             </div>
           </div>
           <form className="text-lg font-dmsans mt-2">
@@ -93,7 +110,7 @@ export default function Client({ user }) {
               <Textarea defaultValue={profile.bio} id="bio" />
             </div>
             <div className="flex justify-end mt-2">
-              <Button variant="outline" >Save</Button>
+              <Button variant="outline">Save</Button>
             </div>
           </form>
           <div className="text-center"></div>

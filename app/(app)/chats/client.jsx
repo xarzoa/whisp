@@ -23,10 +23,9 @@ export default function ChatsClient({ user, matchs }) {
 
   socket.emit('join', user.id)
 
-
   useEffect(() => {
     socket.on('match', id => {
-      console.log(id)
+      setMatches([...matches, id])
     })
   })
 
@@ -34,9 +33,13 @@ export default function ChatsClient({ user, matchs }) {
     setCreating(true);
     const res = await createNewChat(formData);
     if (res) {
+      if(res.data){
+        setMatches([...matches, res.data])
+      }
       toast[res.type](res.message);
     }
     setCreating(false);
+    doOpen()
   }
 
   const doOpen = () => {
@@ -76,7 +79,7 @@ export default function ChatsClient({ user, matchs }) {
             </DialogHeader>
             <div>
               <form action={createChat} className="mt-2 space-y-2">
-                <Input name="username" placeholder="whisp" />
+                <Input name="id" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" />
                 <div className="flex justify-end">
                   <SubmitButton childern={'Create'} />
                 </div>

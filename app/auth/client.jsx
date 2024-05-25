@@ -12,11 +12,14 @@ import {
 import { signIn, signInAnon } from '@/app/auth/actions';
 import { toast } from 'sonner';
 import Link from 'next/link';
+import { useRef } from 'react';
 
 export default function Login() {
+  const form = useRef(null)
   async function formAction(formData) {
     const id = toast.loading('Requesting...');
     await signIn(formData);
+    form.current.reset()
     toast.success('We sent you the OTP.', { id });
   }
   return (
@@ -32,6 +35,7 @@ export default function Login() {
             <form
               className="animate-in flex-1 flex flex-col w-full justify-center gap-2 text-foreground"
               action={formAction}
+              ref={form}
             >
               <Input
                 name="email"
@@ -39,7 +43,7 @@ export default function Login() {
                 type="email"
                 required
               />
-              <Button className="p-0" type="submit" childern="Send my OTP" />
+              <Button className="p-0" type="submit" childern="Sign In" />
             </form>
             <form
               action={signInAnon}

@@ -2,20 +2,19 @@
 import { createClient } from '@/lib/supabase/server';
 import { z } from 'zod';
 import { revalidatePath } from 'next/cache';
+import { socket } from '@/lib/ws';
 
 const usernameSchema = z.object({
-  username: z
+  id: z
     .string()
     .trim()
-    .min(3, { message: 'Username must contain 2+ characters.' })
-    .max(12, { message: 'Username cannot exceed 16 characters.' })
-    .regex(/^[a-zA-Z0-9\$]+$/, 'Special characters not allowed.'),
+    .uuid({ message: "Invalid ID format!"})
 });
 
 export async function createNewChat(formData) {
-  const username = formData.get('username');
+  const id = formData.get('id');
   const validatedFields = usernameSchema.safeParse({
-    username,
+    id,
   });
   if (!validatedFields.success) {
     const error = validatedFields.error.flatten().fieldErrors;
@@ -26,33 +25,28 @@ export async function createNewChat(formData) {
   }
 
   const supabase = createClient();
-  const { data } = await supabase.from('profiles').select('id', 'name', 'username').eq('username', username)
-  if(!data?.[0]){
-    return{
-      message: "No user with that username.",
-      type: 'error'
-    }
-  }
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const { error } = await supabase
+  const { data: room, error } = await supabase
     .from('rooms')
     .insert({
       user_one: user.id,
-      user_two: data[0].id,
+      user_two: id,
       last_activity: new Date()
-    })
+    }).select()
   if (error) {
     return {
       message: error.message,
       type: 'error',
     };
   }
-  revalidatePath('/chats');
+  socket.emit('match', room[0], id)
+  revalidatePath('/chats/');
   return {
-    message: 'Invalid user ID.',
-    type: 'error',
+    data: room[0],
+    message: 'Chat created.',
+    type: 'success',
   };
 }
