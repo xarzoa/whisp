@@ -39,7 +39,7 @@ export default async function PublicProfile({ params }) {
         <div>
           <div className="w-full flex justify-center mt-20 sm:mt-10">
             <Avatar className="h-32 w-32 rounded-3xl">
-              <AvatarImage src={''} className="rounded-3xl" />
+              <AvatarImage src={`${process.env.NEXT_PUBLIC_IMAGE_SERVER}/optimize/supabase/avatars/${profile.avatar}?bucket=whisp&width=128&height=128`} alt={profile.name} className="rounded-3xl" />
               <AvatarFallback className="rounded-3xl text-6xl font-semibold text-stone-300">
                 {profile.name.split('')[0].toUpperCase()}
               </AvatarFallback>
@@ -50,7 +50,9 @@ export default async function PublicProfile({ params }) {
               {profile.name}
             </div>
           </div>
-
+          <div className='text-center p-4'>
+            {profile.bio}
+          </div>
           <div className="text-center">
             <Client user={user} id={id} profile={profile} />
           </div>

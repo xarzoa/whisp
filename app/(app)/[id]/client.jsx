@@ -17,7 +17,7 @@ export default function Client({ id, user, profile }) {
   }
   return (
     <Button
-      className="font-bold font-jbmono"
+      className="font-bold font-jbmono rounded-2xl"
       variant="outline"
       onClick={buttonClick}
       disabled={loading}

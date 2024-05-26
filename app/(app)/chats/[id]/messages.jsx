@@ -31,13 +31,12 @@ export default function Messages({ msgs, user, id, profile }) {
       attachments: null,
       created_at: new Date(),
       flagged: false,
-      sender_info: {
-        id: user.id,
-        name: 'your mom',
-      },
+      sent_by: user.id,
+      received_by: profile.id
     };
     await supabase.from('messages').insert(msg);
     socket.emit('message', msg, id)
+    socket.emit('message', msg, profile.id)
     setMessages([...messages, msg]);
     form.current.reset();
   }
@@ -88,20 +87,20 @@ export default function Messages({ msgs, user, id, profile }) {
           {messages.map((message, index) => (
             <div
               key={index}
-              className={`w-full flex ${message.sender_info.id === user.id ? 'justify-end' : 'justify-start'}`}
+              className={`w-full flex ${message.sent_by === user.id ? 'justify-end' : 'justify-start'}`}
             >
               <div
-                className={`gap-2 flex w-full ${message.sender_info.id === user.id ? 'flex-row-reverse' : 'flex-row'}`}
+                className={`gap-2 flex w-full ${message.sent_by === user.id ? 'flex-row-reverse' : 'flex-row'}`}
               >
                 <div
                   className={`rounded-full h-10 w-10 bg-stone-400 grid place-items-center font-bold text-xs font-jbmono`}
                 >
                   <div className="m-1 truncate max-w-4">
-                    {message.sender_info.id}
+                    {message.sent_by}
                   </div>
                 </div>
                 <div
-                  className={`bg-stone-800/60 px-3 py-1 mb-2 max-w-[60%] sm:min-w-[40%] min-w-[30%] duration-500 rounded-b-xl backdrop-blur-md ${message.sender_info.id === user.id ? 'rounded-l-xl' : 'rounded-r-xl'}`}
+                  className={`bg-stone-800/60 px-3 py-1 mb-2 max-w-[60%] sm:min-w-[40%] min-w-[30%] duration-500 rounded-b-xl backdrop-blur-md ${message.sent_by === user.id ? 'rounded-l-xl' : 'rounded-r-xl'}`}
                 >
                   <div className="mb-2 text-balance max-w-full">
                     <div className="text-balance break-words sm:max-w-full max-w-[calc(100vw-7rem)] duration-500">

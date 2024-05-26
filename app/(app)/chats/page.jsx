@@ -18,10 +18,14 @@ export default async function ProtectedPage() {
     .from('rooms')
     .select('*')
     .or(`user_one.eq.${user.id}, user_two.eq.${user.id}`);
+  const { data: messages } = await supabase
+    .from('messages')
+    .select('*')
+    .or(`sent_by.eq.${user.id}, received_by.eq.${user.id}`);
 
   return (
     <div className="grid w-full p-2 place-items-center h-full">
-      <ChatsClient user={user} matchs={matches} />
+      <ChatsClient user={user} matchs={matches} messages={messages} />
     </div>
   );
 }

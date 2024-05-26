@@ -16,8 +16,9 @@ import { Input } from '@/components/ui/input';
 import SubmitButton from '@/components/app/submit-button';
 import { socket } from '@/lib/ws';
 
-export default function ChatsClient({ user, matchs }) {
+export default function ChatsClient({ user, matchs, messages: msgs }) {
   const [matches, setMatches] = useState(matchs);
+  const [messages, setMessages] = useState(msgs);
   const [creating, setCreating] = useState(false);
   const [open, setOpen] = useState(false);
 
@@ -26,6 +27,9 @@ export default function ChatsClient({ user, matchs }) {
   useEffect(() => {
     socket.on('match', id => {
       setMatches([...matches, id])
+    })
+    socket.on('message', msg => {
+      setMessages([...messages, msg])
     })
   })
 
@@ -89,7 +93,7 @@ export default function ChatsClient({ user, matchs }) {
         </Dialog>
         <div>
           { (matches?.[0])? 
-          <Matches matches={matches} user={user}/>: (
+          <Matches matches={matches} user={user} messages={messages}/>: (
             <div className='m-4 font-semibold font-jbmono text-center'>No chats yet.</div>
           )}
         </div>
@@ -98,7 +102,7 @@ export default function ChatsClient({ user, matchs }) {
   );
 }
 
-function Matches({ matches, user }) {
+function Matches({ matches, user, messages }) {
   function getStranger(match, user) {
     if (match.user_one === user.id) {
       return match.user_two;
@@ -125,7 +129,7 @@ function Matches({ matches, user }) {
                 </div>
                 <div className="flex flex-row">
                   <div className="text-xs text-stone-500">
-                    He said you are a bitch.
+                    {messages?.findLast(({ room }) => room === match.id)?.text}
                   </div>
                 </div>
               </div>
