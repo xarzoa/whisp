@@ -11,7 +11,9 @@ export default async function PublicProfile({ params }) {
     .from('profiles')
     .select('name, username, id, bio, interests, avatar, socials').eq(column, id)
 
-  if (!data) return <div>404 no user</div>;
+  console.log(data)
+
+  if (!data?.[0]) return <div>404 no user</div>;
 
   const {
     data: { user },

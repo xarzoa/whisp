@@ -13,7 +13,7 @@ export default async function Home() {
   ];
 
   const resources = [
-    { name: 'Support', link: '/supprot' },
+    { name: 'Support', link: '/support' },
     { name: 'Safty', link: '/safty' },
     { name: 'Feedback', link: '/feedback' },
     { name: 'Bug Bounty', link: '/developers' },
@@ -22,7 +22,7 @@ export default async function Home() {
   const legal = [
     { name: 'Privacy', link: '/legal/privacy' },
     { name: 'Terms', link: '/legal/terms' },
-    { name: 'DMCA', link: '/legal/feedback' },
+    { name: 'DMCA', link: '/legal/dcma' },
     { name: 'Rules', link: '/legal/rules' },
   ];
 

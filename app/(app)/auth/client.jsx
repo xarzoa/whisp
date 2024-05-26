@@ -9,7 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { signIn, signInAnon } from '@/app/auth/actions';
+import { signIn, signInAnon } from '@/app/(app)/auth/actions';
 import { toast } from 'sonner';
 import Link from 'next/link';
 import { useRef } from 'react';

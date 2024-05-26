@@ -26,7 +26,7 @@ export default function VerifyClient({ searchParams }) {
       if(res){
         toast[res.type](res.message, { id })
       }else{
-        toast.success('Verified. Redirecting...', { id })
+        toast.success('Verified.', { id })
       }
     }
   };
