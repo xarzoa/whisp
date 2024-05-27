@@ -128,7 +128,7 @@ export default function Client({ user }) {
                 className="w-11 ml-2"
                 variant="outline"
                 onClick={() => {
-                  copyToClipboard(profile.id);
+                  copyToClipboard(user.id);
                   setCopied(true);
                 }}
               >

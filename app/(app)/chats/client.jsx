@@ -15,6 +15,7 @@ import {
 import { Input } from '@/components/ui/input';
 import SubmitButton from '@/components/app/submit-button';
 import { socket } from '@/lib/ws';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 export default function ChatsClient({ user, matchs, messages: msgs }) {
   const [matches, setMatches] = useState(matchs);
@@ -103,11 +104,11 @@ export default function ChatsClient({ user, matchs, messages: msgs }) {
 }
 
 function Matches({ matches, user, messages }) {
-  function getStranger(match, user) {
-    if (match.user_one === user.id) {
-      return match.user_two;
+  function getStranger(match, user){
+    if(match.user_one.id === user.id){
+      return match.user_two
     }
-    return match.user_one;
+    return match.user_one
   }
 
   return (
@@ -116,16 +117,13 @@ function Matches({ matches, user, messages }) {
         <div key={index}>
           <Link href={`/chats/${match.id}`}>
             <div className="border flex align-middle items-center gap-2 p-2 rounded-lg hover:bg-stone-900 duration-300 focus:bg-stone-900">
-              <div
-                className={`rounded-full h-10 w-10 bg-stone-400 grid place-items-center font-bold text-xs font-jbmono`}
-              >
-                <div className="m-1 truncate max-w-4">
-                  {getStranger(match, user)}
-                </div>
-              </div>
+              <Avatar className="rounded-none">
+                <AvatarImage src={`${process.env.NEXT_PUBLIC_IMAGE_SERVER}/optimize/supabase/avatars/${getStranger(match, user).avatar}?bucket=whisp&width=128&height=128`} alt={getStranger(match, user).name} className="rounded-none"/>
+                <AvatarFallback className="rounded-none">{getStranger(match, user).name.split('')[0].toUpperCase()}</AvatarFallback>
+              </Avatar>
               <div className="font-jbmono">
                 <div className="text-sm max-w-32 truncate">
-                  {getStranger(match, user)}
+                  {getStranger(match, user).name}
                 </div>
                 <div className="flex flex-row">
                   <div className="text-xs text-stone-500">

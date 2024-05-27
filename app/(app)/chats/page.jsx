@@ -14,10 +14,11 @@ export default async function ProtectedPage() {
 
   if (!user) redirect('/auth');
 
-  const { data: matches } = await supabase
+  const { data: matches, error } = await supabase
     .from('rooms')
-    .select('*')
+    .select(`*, user_one:user_one(id, name, avatar), user_two:user_two(id, name, avatar)`)
     .or(`user_one.eq.${user.id}, user_two.eq.${user.id}`);
+
   const { data: messages } = await supabase
     .from('messages')
     .select('*')

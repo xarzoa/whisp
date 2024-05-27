@@ -10,6 +10,7 @@ import { useFormStatus } from 'react-dom';
 import Dots from '@/components/app/loader/dots';
 import { SendHorizonal, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 export default function Messages({ msgs, user, id, profile }) {
   const supabase = createClient();
@@ -32,12 +33,12 @@ export default function Messages({ msgs, user, id, profile }) {
       created_at: new Date(),
       flagged: false,
       sent_by: user.id,
-      received_by: profile.id
+      received_by: profile.id,
     };
-    await supabase.from('messages').insert(msg);
-    socket.emit('message', msg, id)
-    socket.emit('message', msg, profile.id)
-    setMessages([...messages, msg]);
+    const {data} = await supabase.from('messages').insert(msg).select(`*, sent_by:sent_by(id,name,avatar), received_by:received_by(id,name,avatar)`);
+    socket.emit('message', data[0], id);
+    socket.emit('message', data[0], profile.id);
+    setMessages([...messages, data[0]]);
     form.current.reset();
   }
 
@@ -52,7 +53,7 @@ export default function Messages({ msgs, user, id, profile }) {
   }, [messages]);
 
   useEffect(() => {
-    if(id) socket.emit('join', id)
+    if (id) socket.emit('join', id);
     setNav(navigator.language);
   }, [id, setNav]);
 
@@ -62,21 +63,21 @@ export default function Messages({ msgs, user, id, profile }) {
         <div className="mb-2 sticky z-50 flex justify-between items-center">
           <Link
             className="p-2 bg-stone-900/30 backdrop-blur-lg border rounded-lg hover:bg-stone-500/30 focus:bg-stone-500/30 duration-200"
-            href='/chats'
+            href="/chats"
           >
-            <ArrowLeft/>
+            <ArrowLeft />
           </Link>
           <div className="flex gap-2 items-center">
             <div className="h-9 w-24 bg-stone-400 grid place-items-center font-bold text-xs font-jbmono rounded-lg relative">
-              <div className="m-1 truncate max-w-20">
-                {profile.name}
-              </div>
+              <div className="m-1 truncate max-w-20">{profile.name}</div>
               <div className="absolute -top-2 -left-2 px-1 rounded-md backdrop-blur-lg">
                 stranger
               </div>
             </div>
             <div className="h-9 w-24 bg-stone-500 grid place-items-center font-bold text-xs font-jbmono rounded-lg relative">
-              <div className="m-1 truncate max-w-20">{user.user_metadata.name}</div>
+              <div className="m-1 truncate max-w-20">
+                {user.user_metadata.name}
+              </div>
               <div className="absolute -top-2 -left-2 px-1 rounded-md backdrop-blur-lg">
                 you
               </div>
@@ -87,20 +88,22 @@ export default function Messages({ msgs, user, id, profile }) {
           {messages.map((message, index) => (
             <div
               key={index}
-              className={`w-full flex ${message.sent_by === user.id ? 'justify-end' : 'justify-start'}`}
+              className={`w-full flex ${message.sent_by.id === user.id ? 'justify-end' : 'justify-start'}`}
             >
               <div
-                className={`gap-2 flex w-full ${message.sent_by === user.id ? 'flex-row-reverse' : 'flex-row'}`}
+                className={`gap-2 flex w-full ${message.sent_by.id === user.id ? 'flex-row-reverse' : 'flex-row'}`}
               >
+                <Avatar>
+                  <AvatarImage
+                    src={`${process.env.NEXT_PUBLIC_IMAGE_SERVER}/optimize/supabase/avatars/${message.sent_by.avatar}?bucket=whisp&width=128&height=128`}
+                    alt={message.sent_by.name}
+                  />
+                  <AvatarFallback>
+                    {message.sent_by.name.split('')[0].toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
                 <div
-                  className={`rounded-full h-10 w-10 bg-stone-400 grid place-items-center font-bold text-xs font-jbmono`}
-                >
-                  <div className="m-1 truncate max-w-4">
-                    {message.sent_by}
-                  </div>
-                </div>
-                <div
-                  className={`bg-stone-800/60 px-3 py-1 mb-2 max-w-[60%] sm:min-w-[40%] min-w-[30%] duration-500 rounded-b-xl backdrop-blur-md ${message.sent_by === user.id ? 'rounded-l-xl' : 'rounded-r-xl'}`}
+                  className={`bg-stone-800/60 px-3 py-1 mb-2 max-w-[60%] sm:min-w-[40%] min-w-[30%] duration-500 rounded-b-xl backdrop-blur-md ${message.sent_by.id === user.id ? 'rounded-l-xl' : 'rounded-r-xl'}`}
                 >
                   <div className="mb-2 text-balance max-w-full">
                     <div className="text-balance break-words sm:max-w-full max-w-[calc(100vw-7rem)] duration-500">

@@ -40,7 +40,11 @@ export default async function Home() {
               Text to anyone, Anonymously.
             </div>
             <div className="mt-8">
-              <Button className="p-5 border bg-black/50 rounded-lg hover:bg-black/10 focus:bg-black/10 text-lg md:text-xl font-semibold duration-300 text-white" size="lg" asChild>
+              <Button
+                className="p-5 border bg-black/50 rounded-lg hover:bg-black/10 focus:bg-black/10 text-lg md:text-xl font-semibold duration-300 text-white"
+                size="lg"
+                asChild
+              >
                 <Link href="/auth">Start chatting</Link>
               </Button>
             </div>
@@ -80,8 +84,10 @@ export default async function Home() {
             </p>
           </li>
         </ul>
-        <footer className="grid md:grid-cols-2 mt-8 p-4 pb-8 bg-stone-900 rounded-t-lg">
-          <div></div>
+        <footer className="grid md:grid-cols-2 mt-8 p-4 pb-8 bg-stone-900 rounded-t-3xl">
+          <div className="relative">
+            <div className="absolute h-24 w-24 bg-white/70 blur-3xl"></div>
+          </div>
           <div className="grid grid-cols-3 text-center text-sm md:text-base md:text-end font-jbmono text-stone-200 underline gap-4">
             <ul>
               {company.map((item, index) => (

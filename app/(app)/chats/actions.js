@@ -35,7 +35,8 @@ export async function createNewChat(formData) {
       user_one: user.id,
       user_two: id,
       last_activity: new Date()
-    }).select()
+    }).select(`*, user_one:user_one(id, name, avatar), user_two:user_two(id, name, avatar)`)
+  console.log(room)
   if (error) {
     return {
       message: error.message,
