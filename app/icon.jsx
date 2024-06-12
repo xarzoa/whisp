@@ -5,8 +5,15 @@ export const contentType = 'image/favicon';
 export default function Icon() {
   return new ImageResponse(
     (
-      <div tw="h-full w-full flex items-center justify-center bg-white rounded-xl">
-        <div tw="p-2 font-bold">W</div>
+      <div tw="h-full w-full flex items-center justify-center bg-black text-stone-200 rounded-xl font-bold">
+        <div
+          style={{
+            fontWeight: 'bolder',
+            fontFamily: 'sans-serif',
+          }}
+        >
+          W
+        </div>
       </div>
     ),
     {

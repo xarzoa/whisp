@@ -1,7 +1,7 @@
 'use client';
 import { createRoom } from './actions';
 import { useState } from 'react';
-import Dots from '@/components/app/loader/dots';
+import Dots from '@/components/app/loader';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 

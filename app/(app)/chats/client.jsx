@@ -12,10 +12,19 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import SubmitButton from '@/components/app/submit-button';
 import { socket } from '@/lib/ws';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { signOut } from '../auth/actions';
 
 export default function ChatsClient({ user, matchs, messages: msgs }) {
   const [matches, setMatches] = useState(matchs);
@@ -23,28 +32,28 @@ export default function ChatsClient({ user, matchs, messages: msgs }) {
   const [creating, setCreating] = useState(false);
   const [open, setOpen] = useState(false);
 
-  socket.emit('join', user.id)
+  socket.emit('join', user.id);
 
   useEffect(() => {
-    socket.on('match', id => {
-      setMatches([...matches, id])
-    })
-    socket.on('message', msg => {
-      setMessages([...messages, msg])
-    })
-  })
+    socket.on('match', (id) => {
+      setMatches([...matches, id]);
+    });
+    socket.on('message', (msg) => {
+      setMessages([...messages, msg]);
+    });
+  });
 
   async function createChat(formData) {
     setCreating(true);
     const res = await createNewChat(formData);
     if (res) {
-      if(res.data){
-        setMatches([...matches, res.data])
+      if (res.data) {
+        setMatches([...matches, res.data]);
       }
       toast[res.type](res.message);
     }
     setCreating(false);
-    doOpen()
+    doOpen();
   }
 
   const doOpen = () => {
@@ -57,7 +66,7 @@ export default function ChatsClient({ user, matchs, messages: msgs }) {
 
   return (
     <>
-      <div className="w-full sm:max-w-md duration-500">
+      <div className="w-full h-full duration-500">
         <div>
           <header className="w-full sticky top-0 mb-2 font-jbmono font-semibold">
             <div className="flex justify-between">
@@ -65,11 +74,31 @@ export default function ChatsClient({ user, matchs, messages: msgs }) {
                 <Plus />
               </Button>
               <div className="flex gap-2">
-                <Button variant="outline" size="icon" asChild>
-                  <Link href="/profile">
-                    <User className="stroke-[1.5]" />
-                  </Link>
-                </Button>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" size="icon">
+                      <User className="stroke-[1.5]" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="mr-2">
+                    <DropdownMenuLabel>Account</DropdownMenuLabel>
+                    <div className="m-2 w-48">
+                      <div className="text-sm text-stone-400 truncate font-semibold">
+                        {user.user_metadata.name}
+                      </div>
+                      <div className="text-xs text-stone-400 truncate">
+                        {user.user_metadata.email}
+                      </div>
+                    </div>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem>
+                      <Link href="/profile">Profile</Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Button href="/profile" variant="ghost" className="w-full justify-start text-stone-200" size="sm" onClick={() => signOut()}>Logout</Button>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
             </div>
           </header>
@@ -78,13 +107,14 @@ export default function ChatsClient({ user, matchs, messages: msgs }) {
           <DialogContent>
             <DialogHeader>
               <DialogTitle>Create a chat</DialogTitle>
-              <DialogDescription>
-                Create a new chat with ID.
-              </DialogDescription>
+              <DialogDescription>Create a new chat with ID.</DialogDescription>
             </DialogHeader>
             <div>
               <form action={createChat} className="mt-2 space-y-2">
-                <Input name="id" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" />
+                <Input
+                  name="id"
+                  placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+                />
                 <div className="flex justify-end">
                   <SubmitButton childern={'Create'} />
                 </div>
@@ -93,9 +123,12 @@ export default function ChatsClient({ user, matchs, messages: msgs }) {
           </DialogContent>
         </Dialog>
         <div>
-          { (matches?.[0])? 
-          <Matches matches={matches} user={user} messages={messages}/>: (
-            <div className='m-4 font-semibold font-jbmono text-center'>No chats yet.</div>
+          {matches?.[0] ? (
+            <Matches matches={matches} user={user} messages={messages} />
+          ) : (
+            <div className="m-4 font-semibold font-jbmono text-center">
+              No chats yet.
+            </div>
           )}
         </div>
       </div>
@@ -104,11 +137,11 @@ export default function ChatsClient({ user, matchs, messages: msgs }) {
 }
 
 function Matches({ matches, user, messages }) {
-  function getStranger(match, user){
-    if(match.user_one.id === user.id){
-      return match.user_two
+  function getStranger(match, user) {
+    if (match.user_one.id === user.id) {
+      return match.user_two;
     }
-    return match.user_one
+    return match.user_one;
   }
 
   return (
@@ -117,9 +150,15 @@ function Matches({ matches, user, messages }) {
         <div key={index}>
           <Link href={`/chats/${match.id}`}>
             <div className="border flex align-middle items-center gap-2 p-2 rounded-lg hover:bg-stone-900 duration-300 focus:bg-stone-900">
-              <Avatar className="rounded-none">
-                <AvatarImage src={`${process.env.NEXT_PUBLIC_IMAGE_SERVER}/optimize/supabase/avatars/${getStranger(match, user).avatar}?bucket=whisp&width=128&height=128`} alt={getStranger(match, user).name} className="rounded-none"/>
-                <AvatarFallback className="rounded-none">{getStranger(match, user).name.split('')[0].toUpperCase()}</AvatarFallback>
+              <Avatar>
+                <AvatarImage
+                  src={`${process.env.NEXT_PUBLIC_IMAGE_SERVER}/optimize/supabase/avatars/${getStranger(match, user).avatar}?bucket=whisp&width=128&height=128`}
+                  alt={getStranger(match, user).name}
+                  className="rounded-none"
+                />
+                <AvatarFallback className="rounded-none">
+                  {getStranger(match, user).name.split('')[0].toUpperCase()}
+                </AvatarFallback>
               </Avatar>
               <div className="font-jbmono">
                 <div className="text-sm max-w-32 truncate">

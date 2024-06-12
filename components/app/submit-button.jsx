@@ -1,7 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { useFormStatus } from "react-dom";
-import Dots from "./loader/dots";
+import Spinner from "./loader";
 
 export default function SubmitButton({
   className,
@@ -14,10 +14,10 @@ export default function SubmitButton({
   return (
     <Button
       disabled={disabled || pending}
-      className={`font-jbmono ${className}`}
+      className={className}
       {...props}
     >
-      {pending ? <Dots tw={tw} /> : [childern]}
+      {pending ? <Spinner tw={tw} /> : [childern]}
     </Button>
   );
 }

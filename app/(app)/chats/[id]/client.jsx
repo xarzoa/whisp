@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { useFormStatus } from 'react-dom';
-import Dots from '@/components/app/loader/dots';
+import Dots from '@/components/app/loader';
 import { SendHorizonal, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -35,13 +35,23 @@ export default function Messages({ msgs, user, id, profile }) {
       sent_by: user.id,
       received_by: profile.id,
     };
-    const {data} = await supabase.from('messages').insert(msg).select(`*, sent_by:sent_by(id,name,avatar), received_by:received_by(id,name,avatar)`);
+    const { data } = await supabase
+      .from('messages')
+      .insert(msg)
+      .select(
+        `*, sent_by:sent_by(id,name,avatar), received_by:received_by(id,name,avatar)`
+      );
     socket.emit('message', data[0], id);
     socket.emit('message', data[0], profile.id);
     setMessages([...messages, data[0]]);
     form.current.reset();
   }
-
+  
+  useEffect(() => {
+    if (id) socket.emit('join', id);
+    setNav(navigator.language);
+  }, [id, setNav]);
+  
   useEffect(() => {
     socket.on('message', (message) => {
       setMessages([...messages, message]);
@@ -52,14 +62,10 @@ export default function Messages({ msgs, user, id, profile }) {
     scrollToBottom();
   }, [messages]);
 
-  useEffect(() => {
-    if (id) socket.emit('join', id);
-    setNav(navigator.language);
-  }, [id, setNav]);
 
   return (
     <div className="w-full h-full flex justify-center">
-      <div className="w-full sm:max-w-md">
+      <div className="w-full">
         <div className="mb-2 sticky z-50 flex justify-between items-center">
           <Link
             className="p-2 bg-stone-900/30 backdrop-blur-lg border rounded-lg hover:bg-stone-500/30 focus:bg-stone-500/30 duration-200"
@@ -88,7 +94,7 @@ export default function Messages({ msgs, user, id, profile }) {
           {messages.map((message, index) => (
             <div
               key={index}
-              className={`w-full flex ${message.sent_by.id === user.id ? 'justify-end' : 'justify-start'}`}
+              className={`w-full flex ${message.sent_by.id === user.id ? 'justify-end' : ''}`}
             >
               <div
                 className={`gap-2 flex w-full ${message.sent_by.id === user.id ? 'flex-row-reverse' : 'flex-row'}`}
@@ -103,14 +109,16 @@ export default function Messages({ msgs, user, id, profile }) {
                   </AvatarFallback>
                 </Avatar>
                 <div
-                  className={`bg-stone-800/60 px-3 py-1 mb-2 max-w-[60%] sm:min-w-[40%] min-w-[30%] duration-500 rounded-b-xl backdrop-blur-md ${message.sent_by.id === user.id ? 'rounded-l-xl' : 'rounded-r-xl'}`}
+                  className={`bg-stone-800/60 px-3 py-1 mb-2 max-w-[60%] duration-500 rounded-b-xl backdrop-blur-md ${message.sent_by.id === user.id ? 'rounded-l-xl' : 'rounded-r-xl'}`}
                 >
                   <div className="mb-2 text-balance max-w-full">
                     <div className="text-balance break-words sm:max-w-full max-w-[calc(100vw-7rem)] duration-500">
                       {message.text}
                     </div>
                   </div>
-                  <div className="text-[10px] font-dmsans w-full flex justify-end font-bold text-stone-400">
+                </div>
+                <div>
+                  <div className="text-[10px] rounded-lg font-dmsans flex justify-end font-bold text-stone-400 bg-stone-800/60 py-0.5 px-1">
                     {new Date(message.created_at).toLocaleTimeString(nav, {
                       hour: '2-digit',
                       minute: '2-digit',
