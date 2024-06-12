@@ -1,8 +1,8 @@
 'use client';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { createNewChat } from './actions';
-import { Plus, User } from 'lucide-react';
+import { createNewChat, createRandomMatch } from './actions';
+import { Plus, User, DicesIcon } from 'lucide-react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import {
@@ -25,12 +25,14 @@ import SubmitButton from '@/components/app/submit-button';
 import { socket } from '@/lib/ws';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { signOut } from '../auth/actions';
+import { useRouter } from 'next/navigation';
 
 export default function ChatsClient({ user, matchs, messages: msgs }) {
   const [matches, setMatches] = useState(matchs);
   const [messages, setMessages] = useState(msgs);
   const [creating, setCreating] = useState(false);
   const [open, setOpen] = useState(false);
+  const router = useRouter();
 
   socket.emit('join', user.id);
 
@@ -40,6 +42,9 @@ export default function ChatsClient({ user, matchs, messages: msgs }) {
     });
     socket.on('message', (msg) => {
       setMessages([...messages, msg]);
+    });
+    socket.on('randomMatch', (id) => {
+      return router.push('/chats/' + id);
     });
   });
 
@@ -70,9 +75,18 @@ export default function ChatsClient({ user, matchs, messages: msgs }) {
         <div>
           <header className="w-full sticky top-0 mb-2 font-jbmono font-semibold">
             <div className="flex justify-between">
-              <Button variant="outline" size="icon" onClick={doOpen}>
-                <Plus />
-              </Button>
+              <div className='flex gap-2'>
+                <Button variant="outline" size="icon" onClick={doOpen}>
+                  <Plus />
+                </Button>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => createRandomMatch()}
+                >
+                  <DicesIcon />
+                </Button>
+              </div>
               <div className="flex gap-2">
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
@@ -95,7 +109,15 @@ export default function ChatsClient({ user, matchs, messages: msgs }) {
                       <Link href="/profile">Profile</Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
-                      <Button href="/profile" variant="ghost" className="w-full justify-start text-stone-200" size="sm" onClick={() => signOut()}>Logout</Button>
+                      <Button
+                        href="/profile"
+                        variant="ghost"
+                        className="w-full justify-start text-stone-200"
+                        size="sm"
+                        onClick={() => signOut()}
+                      >
+                        Logout
+                      </Button>
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
